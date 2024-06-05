@@ -1,0 +1,50 @@
+﻿@page "/editauthor/{id:int}"
+@page "/addauthor"
+@using BookStore.Client.Models
+@using BookStore.Client.Services
+@inject IAuthorService AuthorService
+@inject NavigationManager NavigationManager
+
+<h3>@(isNewAuthor ? "Add Author" : "Edit Author")</h3>
+
+<EditForm Model="@author" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="author.Name" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Author author = new Author();
+    private bool isNewAuthor => Id == 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!isNewAuthor)
+        {
+            author = await AuthorService.GetAuthorByIdAsync(Id);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (isNewAuthor)
+        {
+            await AuthorService.AddAuthorAsync(author);
+        }
+        else
+        {
+            await AuthorService.UpdateAuthorAsync(Id, author);
+        }
+
+        NavigationManager.NavigateTo("/authors");
+    }
+}

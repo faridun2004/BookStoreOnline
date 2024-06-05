@@ -1,0 +1,71 @@
+﻿@page "/editbook/{id:int}"
+@page "/addbook"
+@using BookStore.Client.Models
+@using BookStore.Client.Services
+@inject IBookService BookService
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+
+<h3>@(isNewBook ? "Add Book" : "Edit Book")</h3>
+
+<EditForm Model="@book" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="book.Title" />
+    </div>
+    <div class="form-group">
+        <label for="price">Price</label>
+        <InputNumber id="price" class="form-control" @bind-Value="book.Price" />
+    </div>
+    <div class="form-group">
+        <label for="category">Category</label>
+        <InputSelect id="category" class="form-control" @bind-Value="book.CategoryId">
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="imageUrl">Image URL</label>
+        <InputText id="imageUrl" class="form-control" @bind-Value="book.ImageUrl" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Book book = new Book();
+    private bool isNewBook => Id == 0;
+    private List<Category> categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = (await CategoryService.GetCategoriesAsync()).ToList();
+
+        if (!isNewBook)
+        {
+            book = await BookService.GetBookByIdAsync(Id);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (isNewBook)
+        {
+            await BookService.AddBookAsync(book);
+        }
+        else
+        {
+            await BookService.UpdateBookAsync(Id, book);
+        }
+
+        NavigationManager.NavigateTo("/books");
+    }
+}

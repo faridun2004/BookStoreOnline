@@ -1,0 +1,50 @@
+﻿@page "/editcategory/{id:int}"
+@page "/addcategory"
+@using BookStore.Client.Models
+@using BookStore.Client.Services
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+
+<h3>@(isNewCategory ? "Add Category" : "Edit Category")</h3>
+
+<EditForm Model="@category" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="category.Name" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Category category = new Category();
+    private bool isNewCategory => Id == 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!isNewCategory)
+        {
+            category = await CategoryService.GetCategoryByIdAsync(Id);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (isNewCategory)
+        {
+            await CategoryService.AddCategoryAsync(category);
+        }
+        else
+        {
+            await CategoryService.UpdateCategoryAsync(Id, category);
+        }
+
+        NavigationManager.NavigateTo("/categories");
+    }
+}

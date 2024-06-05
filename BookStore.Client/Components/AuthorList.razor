@@ -1,0 +1,55 @@
+﻿@page "/authors"
+@using BookStore.Client.Models
+@using BookStore.Client.Services
+@inject IAuthorService AuthorService
+@inject NavigationManager NavigationManager
+<h3>Authors</h3>
+
+@if (authors == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var author in authors)
+            {
+                <tr>
+                    <td>@author.Name</td>
+                    <td>
+                        <a href="editauthor/@author.Id">Edit</a> |
+                        <button @onclick="() => DeleteAuthor(author.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button @onclick="AddAuthor">Add New Author</button>
+}
+
+@code {
+    private IEnumerable<Author> authors;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authors = await AuthorService.GetAuthorsAsync();
+    }
+
+    private void AddAuthor()
+    {
+        NavigationManager.NavigateTo("addauthor");
+    }
+
+    private async Task DeleteAuthor(int id)
+    {
+        await AuthorService.DeleteAuthorAsync(id);
+        authors = await AuthorService.GetAuthorsAsync();
+    }
+}

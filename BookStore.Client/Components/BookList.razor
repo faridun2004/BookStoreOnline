@@ -1,0 +1,60 @@
+﻿@page "/books"
+@using BookStore.Client.Models
+@using BookStore.Client.Services
+@inject IBookService BookService
+@inject NavigationManager NavigationManager
+
+<h3>Books</h3>
+
+@if (books == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in books)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Price</td>
+                    <td>@book.Category?.Name</td>
+                    <td>
+                        <a href="editbook/@book.Id">Edit</a> |
+                        <button @onclick="() => DeleteBook(book.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button @onclick="AddBook">Add New Book</button>
+}
+
+@code {
+    private IEnumerable<Book> books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await BookService.GetBooksAsync();
+    }
+
+    private void AddBook()
+    {
+        NavigationManager.NavigateTo("addbook");
+    }
+
+    private async Task DeleteBook(int id)
+    {
+        await BookService.DeleteBookAsync(id);
+        books = await BookService.GetBooksAsync();
+    }
+}

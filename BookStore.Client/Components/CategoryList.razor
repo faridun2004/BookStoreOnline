@@ -1,0 +1,56 @@
+﻿@page "/categories"
+@using BookStore.Client.Models
+@using BookStore.Client.Services
+@inject ICategoryService CategoryService
+@inject NavigationManager NavigationManager
+
+<h3>Categories</h3>
+
+@if (categories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>
+                        <a href="editcategory/@category.Id">Edit</a> |
+                        <button @onclick="() => DeleteCategory(category.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button @onclick="AddCategory">Add New Category</button>
+}
+
+@code {
+    private IEnumerable<Category> categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await CategoryService.GetCategoriesAsync();
+    }
+
+    private void AddCategory()
+    {
+        NavigationManager.NavigateTo("addcategory");
+    }
+
+    private async Task DeleteCategory(int id)
+    {
+        await CategoryService.DeleteCategoryAsync(id);
+        categories = await CategoryService.GetCategoriesAsync();
+    }
+}
