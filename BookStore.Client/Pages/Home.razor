@@ -1,7 +1,27 @@
 ﻿@page "/"
+@using BookStore.Client.Components
+@using BookStore.Client.Models
 
-<PageTitle>Home</PageTitle>
+<div class="container mt-5">
+    <div class="jumbotron">
+        <h1 class="display-4">Добро пожаловать в наш Книжный Магазин!</h1>
+        
+        <a class="btn btn-primary btn-lg" href="#menu" role="button">Посмотреть меню</a>
+    </div>
+</div>
+<BookMenu />
+<div class="container" id="menu">
+    <h2>Наше меню</h2>
+    <div class="row">
+        <!-- Ваше меню -->
+    </div>
+</div>
 
-<h1>Hello, world!</h1>
+@code {
+    private bool isPanelOpen = false;
 
-Welcome to your new app.
+    private void TogglePanel()
+    {
+        isPanelOpen = !isPanelOpen;
+    }
+}

@@ -15,45 +15,34 @@ namespace BookStore.Server.Repositories.Books
 
         public async Task<IEnumerable<Book>> GetAllAsync()
         {
-            return await _context.Books.Include(b => b.Category)
-                                       .Include(b => b.BookAuthors)
-                                       .ThenInclude(ba => ba.Author)
-                                       .ToListAsync();
+            return await _context.Books.ToListAsync();
         }
 
         public async Task<Book> GetByIdAsync(int id)
         {
-            return await _context.Books.Include(b => b.Category)
-                                       .Include(b => b.BookAuthors)
-                                       .ThenInclude(ba => ba.Author)
-                                       .FirstOrDefaultAsync(b => b.Id == id);
+            return await _context.Books.FindAsync(id);
         }
 
-        public async Task<Book> AddAsync(Book book)
+        public async Task AddAsync(Book book)
         {
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
-            return book;
         }
 
-        public async Task<Book> UpdateAsync(Book book)
+        public async Task UpdateAsync(Book book)
         {
             _context.Entry(book).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return book;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var book = await _context.Books.FindAsync(id);
-            if (book == null)
+            if (book != null)
             {
-                return false;
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
             }
-
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-            return true;
         }
     }
 }

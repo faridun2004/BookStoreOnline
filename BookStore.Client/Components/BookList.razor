@@ -12,31 +12,27 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var book in books)
-            {
-                <tr>
-                    <td>@book.Title</td>
-                    <td>@book.Price</td>
-                    <td>@book.Category?.Name</td>
-                    <td>
-                        <a href="editbook/@book.Id">Edit</a> |
-                        <button @onclick="() => DeleteBook(book.Id)">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <button @onclick="AddBook">Add New Book</button>
+    <div class="row">
+        @foreach (var book in books)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="http://localhost:5032/@book.ImageUrl" class="card-img-top" alt="@book.Title" style="height: 220px; object-fit: cover;" onerror="this.onerror=null;">
+                    <div class="card-body">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text">@book.Category</p>
+                        <p class="card-text"><strong>Price:</strong> @book.Price Сомонӣ</p>
+                    </div>
+                    <div class="card-footer">
+                        <button @onclick="() => EditBook(book.Id)" class="btn btn-primary btn-sm">Edit</button>
+                        <button @onclick="() => DeleteBook(book.Id)" class="btn btn-danger btn-sm">Delete</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <button @onclick="CreateBook" class="btn btn-success mt-4">Add New Book</button>
+    
 }
 
 @code {
@@ -44,17 +40,23 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        books = await BookService.GetBooksAsync();
+        books = await BookService.GetAllProducts();
     }
 
-    private void AddBook()
+    private void CreateBook()
     {
-        NavigationManager.NavigateTo("addbook");
+        NavigationManager.NavigateTo("/create-book");
     }
-
+    private void EditBook(int id)
+    {
+        NavigationManager.NavigateTo($"/edit-book/{id}");
+    }
     private async Task DeleteBook(int id)
     {
-        await BookService.DeleteBookAsync(id);
-        books = await BookService.GetBooksAsync();
+        await BookService.DeleteProduct(id);
+        books = await BookService.GetAllProducts();
     }
 }
+
+
+

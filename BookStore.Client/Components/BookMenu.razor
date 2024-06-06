@@ -1,0 +1,90 @@
+﻿@page "/menu"
+@using BookStore.Client.Models
+@using BookStore.Client.Services
+@inject IBookService BookService
+@inject ICartService CartService
+@inject NavigationManager NavigationManager
+
+@code {
+    private IEnumerable<Book>? books;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = await BookService.GetAllProducts();
+    }
+
+    private void GoToCart()
+    {
+        NavigationManager.NavigateTo("cart");
+    }
+
+    private void AddToCart(Book book)
+    {
+        var cartItem = new CartItem
+            {
+                BookId = book.Id,
+                Name = book.Title,
+                Quantity = 1,
+                Price = book.Price.Value
+            };
+
+        CartService.AddToCart(cartItem);
+    }
+
+}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">Название вашего ресторана</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/menu">Меню</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">О нас</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <button class="btn btn-outline-success" @onclick="GoToCart">
+                        Корзина
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2>Наше меню</h2>
+    <div class="row">
+        @if (books == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            @foreach (var item in books)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="http://localhost:5032/@item.ImageUrl" class="card-img-top" alt="@item.Title" style="height: 220px; object-fit: cover;" onerror="this.onerror=null;">
+
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+                            <p class="card-text">@item.Category</p>
+                            <p class="card-text"><strong>@item.Price Сомонӣ</strong></p>
+                            <button class="btn btn-primary" @onclick="() => AddToCart(item)">Добавить в корзину</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

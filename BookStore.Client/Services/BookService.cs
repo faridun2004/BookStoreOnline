@@ -12,31 +12,32 @@ namespace BookStore.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Book>> GetBooksAsync()
+        public async Task<IEnumerable<Book>> GetAllProducts()
         {
             return await _httpClient.GetFromJsonAsync<IEnumerable<Book>>("api/books");
         }
 
-        public async Task<Book> GetBookByIdAsync(int id)
+        public async Task<Book> GetProductById(int id)
         {
             return await _httpClient.GetFromJsonAsync<Book>($"api/books/{id}");
         }
 
-        public async Task<Book> AddBookAsync(Book book)
+        public async Task AddProduct(Book book, MultipartFormDataContent content)
         {
             var response = await _httpClient.PostAsJsonAsync("api/books", book);
-            return await response.Content.ReadFromJsonAsync<Book>();
+            response.EnsureSuccessStatusCode();
         }
 
-        public async Task<Book> UpdateBookAsync(int id, Book book)
+        public async Task UpdateProduct(Book book, MultipartFormDataContent content)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/books/{id}", book);
-            return await response.Content.ReadFromJsonAsync<Book>();
+            var response = await _httpClient.PutAsync($"api/books/{book.Id}", content);
+            response.EnsureSuccessStatusCode();
         }
 
-        public async Task DeleteBookAsync(int id)
+        public async Task DeleteProduct(int id)
         {
-            await _httpClient.DeleteAsync($"api/books/{id}");
+            var response = await _httpClient.DeleteAsync($"api/books/{id}");
+            response.EnsureSuccessStatusCode();
         }
     }
 }

@@ -1,0 +1,83 @@
+﻿@page "/cart"
+@using BookStore.Client.Models
+@using BookStore.Client.Services
+@inject ICartService CartService
+@inject NavigationManager NavigationManager
+
+<h2>Корзина</h2>
+
+@if (cart == null || !cart.Items.Any())
+{
+    <p>Ваша корзина пуста.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in cart.Items)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <button class="btn btn-secondary" @onclick="() => UpdateQuantity(item.BookId, item.Quantity - 1)">-</button>
+                        @item.Quantity
+                        <button class="btn btn-secondary" @onclick="() => UpdateQuantity(item.BookId, item.Quantity + 1)">+</button>
+                    </td>
+                    <td>@item.Price Сомони</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => RemoveFromCart(item.BookId)">Удалить</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h4>Итоговая сумма: @cart.TotalPrice Сомони</h4>
+    <button class="btn btn-primary" @onclick="ClearCart">Очистить корзину</button>
+    <button class="btn btn-primary" @onclick="GoToCheckout">Оформить заказ</button>
+}
+
+@code {
+    private BookStore.Client.Models.Cart? cart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cart = await CartService.GetCart();
+    }
+
+    private async Task RemoveFromCart(int productId)
+    {
+        await CartService.RemoveFromCart(productId);
+        cart = await CartService.GetCart();
+    }
+
+    private async Task ClearCart()
+    {
+        await CartService.ClearCart();
+        cart = await CartService.GetCart();
+    }
+
+    private async Task UpdateQuantity(int bookId, int newQuantity)
+    {
+        if (newQuantity > 0)
+        {
+            await CartService.UpdateQuantity(bookId, newQuantity);
+        }
+        else
+        {
+            await CartService.RemoveFromCart(bookId);
+        }
+        cart = await CartService.GetCart();
+    }
+    private void GoToCheckout()
+    {
+        NavigationManager.NavigateTo("/checkout");
+    }
+}

@@ -11,6 +11,8 @@ internal class Program
         builder.Services.AddDbContext<BookContext>(con => con.UseSqlServer(builder.Configuration["ConnectionString"])
                               .LogTo(Console.Write, LogLevel.Error)
                   .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+        builder.Services.AddAutoMapper(typeof(Program));
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
         // Add services to the container.
         builder.Services.AddMyServices();
         builder.Services.AddControllers()

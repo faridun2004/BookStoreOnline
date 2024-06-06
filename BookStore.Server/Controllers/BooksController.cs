@@ -12,54 +12,101 @@ namespace BookStoreOnline.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<BooksController> _logger;
 
-        public BooksController(IBookService bookService)
+        public BooksController(IBookService bookService, IWebHostEnvironment environment, ILogger<BooksController> logger)
         {
             _bookService = bookService;
+            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetAllBooks()
+        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
-            var books = await _bookService.GetAllBooksAsync();
-            return Ok(books);
+            var dishes = await _bookService.GetAllAsync();
+            return Ok(dishes);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id)
         {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if (book == null)
+            var dish = await _bookService.GetByIdAsync(id);
+            if (dish == null)
             {
                 return NotFound();
             }
-            return Ok(book);
+            return Ok(dish);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddBook(Book book)
+        public async Task<ActionResult<Book>> PostBook([FromForm] BookCreateDto bookDto)
         {
-            await _bookService.AddBookAsync(book);
-            return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+            if (bookDto.Image != null)
+            {
+                var imageUrl = await SaveImage(bookDto.Image);
+                var book = new Book
+                {
+                    Title = bookDto.Title,
+                    CategoryId = bookDto.CategoryId,
+                    ImageUrl = imageUrl,
+                    Price = bookDto.Price
+                };
+
+                await _bookService.AddAsync(book);
+                return CreatedAtAction(nameof(GetBook), new { id = book.Id }, book);
+            }
+            return BadRequest("Image file is required.");
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, Book book)
+        public async Task<IActionResult> PutBook(int id, [FromForm] BookCreateDto bookDto)
         {
-            if (id != book.Id)
+            var existingDish = await _bookService.GetByIdAsync(id);
+            if (existingDish == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            await _bookService.UpdateBookAsync(book);
+            if (bookDto.Image != null)
+            {
+                var imageUrl = await SaveImage(bookDto.Image);
+                existingDish.ImageUrl = imageUrl;
+            }
+
+            existingDish.Title = bookDto.Title;
+            existingDish.CategoryId = bookDto.CategoryId;
+            existingDish.Price = bookDto.Price;
+
+            await _bookService.UpdateAsync(existingDish);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
-            await _bookService.DeleteBookAsync(id);
+            await _bookService.DeleteAsync(id);
             return NoContent();
         }
+
+        private async Task<string> SaveImage(IFormFile imageFile)
+        {
+            var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+            if (!Directory.Exists(uploads))
+            {
+                Directory.CreateDirectory(uploads);
+            }
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+            var filePath = Path.Combine(uploads, fileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            return $"/uploads/{fileName}";
+        }
+
     }
 }

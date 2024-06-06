@@ -4,10 +4,10 @@ namespace BookStore.Client.Services
 {
     public interface IBookService
     {
-        Task<IEnumerable<Book>> GetBooksAsync();
-        Task<Book> GetBookByIdAsync(int id);
-        Task<Book> AddBookAsync(Book book);
-        Task<Book> UpdateBookAsync(int id, Book book);
-        Task DeleteBookAsync(int id);
+        Task<IEnumerable<Book>> GetAllProducts();
+        Task<Book> GetProductById(int id);
+        Task AddProduct(Book book, MultipartFormDataContent content);
+        Task UpdateProduct(Book book, MultipartFormDataContent content);
+        Task DeleteProduct(int id);
     }
 }

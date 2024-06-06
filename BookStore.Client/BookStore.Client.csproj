@@ -6,9 +6,36 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="Components\cart.razor" />
+    <Content Remove="Components\Orders.razor" />
+  </ItemGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.2" PrivateAssets="all" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Components\cart.razor" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="Components\cart.razor" />
+	  <_ContentIncludedByDefault Remove="Components\Orders.razor" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <None Include="Components\Cart.razor" />
+	  <None Include="Components\Orders.razor" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Components\Orders.razor" />
 	</ItemGroup>
 </Project>
