@@ -1,13 +1,13 @@
 ﻿using BookStoreOnline.Models;
 
-namespace BookStoreOnline.Services.Authors
+namespace BookStore.Server.Services.Authors
 {
     public interface IAuthorService
     {
-        Task<IEnumerable<Author>> GetAuthorsAsync();
+        Task<IEnumerable<Author>> GetAllAuthorsAsync();
         Task<Author> GetAuthorByIdAsync(int id);
-        Task<Author> AddAuthorAsync(Author author);
-        Task<Author> UpdateAuthorAsync(int id, Author author);
-        Task<bool> DeleteAuthorAsync(int id);
+        Task AddAuthorAsync(Author author);
+        Task UpdateAuthorAsync(Author author);
+        Task DeleteAuthorAsync(int id);
     }
 }

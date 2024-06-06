@@ -4,10 +4,10 @@ namespace BookStoreOnline.Services.Books
 {
     public interface IBookService
     {
-        Task<IEnumerable<Book>> GetBooksAsync();
+        Task<IEnumerable<Book>> GetAllBooksAsync();
         Task<Book> GetBookByIdAsync(int id);
-        Task<Book> AddBookAsync(Book book);
-        Task<Book> UpdateBookAsync(int id, Book book);
-        Task<bool> DeleteBookAsync(int id);
+        Task AddBookAsync(Book book);
+        Task UpdateBookAsync(Book book);
+        Task DeleteBookAsync(int id);
     }
 }

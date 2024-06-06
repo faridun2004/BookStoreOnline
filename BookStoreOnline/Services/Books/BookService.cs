@@ -1,4 +1,5 @@
-﻿using BookStoreOnline.Data;
+﻿using BookStore.Server.Repositories.Books;
+using BookStoreOnline.Data;
 using BookStoreOnline.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,53 +7,36 @@ namespace BookStoreOnline.Services.Books
 {
     public class BookService : IBookService
     {
-        private readonly BookContext _context;
+        private readonly IBookRepository _bookRepository;
 
-        public BookService(BookContext context)
+        public BookService(IBookRepository bookRepository)
         {
-            _context = context;
+            _bookRepository = bookRepository;
         }
-        public async Task<IEnumerable<Book>> GetBooksAsync()
+
+        public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
-            return await _context.Books.Include(b => b.Category)
-                                       .Include(b => b.BookAuthors)
-                                       .ThenInclude(ba => ba.Author)
-                                       .ToListAsync();
+            return await _bookRepository.GetAllAsync();
         }
 
         public async Task<Book> GetBookByIdAsync(int id)
         {
-            return await _context.Books.Include(b => b.Category)
-                                       .Include(b => b.BookAuthors)
-                                       .ThenInclude(ba => ba.Author)
-                                       .FirstOrDefaultAsync(b => b.Id == id);
+            return await _bookRepository.GetByIdAsync(id);
         }
-        public async Task<Book> AddBookAsync(Book book)
+
+        public async Task AddBookAsync(Book book)
         {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-            return book;
+            await _bookRepository.AddAsync(book);
         }
-        public async Task<Book> UpdateBookAsync(int id, Book book)
+
+        public async Task UpdateBookAsync(Book book)
         {
-            if (id != book.Id)
-            {
-                return null;
-            }
-            _context.Entry(book).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return book;
+            await _bookRepository.UpdateAsync(book);
         }
-        public async Task<bool> DeleteBookAsync(int id)
+
+        public async Task DeleteBookAsync(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-            {
-                return false;
-            }
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-            return true;
+            await _bookRepository.DeleteAsync(id);
         }
     }
 }

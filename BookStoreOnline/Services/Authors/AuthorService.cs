@@ -2,9 +2,9 @@
 using BookStoreOnline.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStoreOnline.Services.Authors
+namespace BookStore.Server.Services.Authors
 {
-    public class AuthorService : IAuthorService
+    public class AuthorService: IAuthorService
     {
         private readonly BookContext _context;
 
@@ -13,7 +13,7 @@ namespace BookStoreOnline.Services.Authors
             _context = context;
         }
 
-        public async Task<IEnumerable<Author>> GetAuthorsAsync()
+        public async Task<IEnumerable<Author>> GetAllAuthorsAsync()
         {
             return await _context.Authors.Include(a => a.BookAuthors)
                                          .ThenInclude(ba => ba.Book)
@@ -27,36 +27,26 @@ namespace BookStoreOnline.Services.Authors
                                          .FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public async Task<Author> AddAuthorAsync(Author author)
+        public async Task AddAuthorAsync(Author author)
         {
-            _context.Authors.Add(author);
+            await _context.Authors.AddAsync(author);
             await _context.SaveChangesAsync();
-            return author;
         }
 
-        public async Task<Author> UpdateAuthorAsync(int id, Author author)
+        public async Task UpdateAuthorAsync(Author author)
         {
-            if (id != author.Id)
-            {
-                return null;
-            }
-
-            _context.Entry(author).State = EntityState.Modified;
+            _context.Authors.Update(author);
             await _context.SaveChangesAsync();
-            return author;
         }
 
-        public async Task<bool> DeleteAuthorAsync(int id)
+        public async Task DeleteAuthorAsync(int id)
         {
             var author = await _context.Authors.FindAsync(id);
-            if (author == null)
+            if (author != null)
             {
-                return false;
+                _context.Authors.Remove(author);
+                await _context.SaveChangesAsync();
             }
-
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
-            return true;
         }
     }
 }
