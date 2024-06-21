@@ -1,6 +1,5 @@
-﻿using BookStore.Server.Models;
+﻿using BookStore.Server.Domain.Entities;
 using BookStoreOnline.Data;
-using BookStoreOnline.Models;
 using BookStoreOnline.Services.Books;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

@@ -15,7 +15,7 @@
 
     private void GoToCart()
     {
-        NavigationManager.NavigateTo("cart");
+        NavigationManager.NavigateTo("/cart");
     }
 
     private void AddToCart(Book book)
@@ -27,7 +27,7 @@
                 Quantity = 1,
                 Price = book.Price.Value
             };
-
+    
         CartService.AddToCart(cartItem);
     }
 

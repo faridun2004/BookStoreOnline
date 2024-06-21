@@ -1,8 +1,7 @@
-﻿using BookStore.Server.Models;
-using BookStoreOnline.Models;
+﻿using BookStore.Server.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStoreOnline.Data
+namespace BookStore.Server.Persistence.Contexts
 {
     public class BookContext : DbContext
     {

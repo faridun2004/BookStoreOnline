@@ -1,4 +1,4 @@
-﻿namespace BookStoreOnline.Models
+﻿namespace BookStore.Server.Domain.Entities
 {
     public class Category
     {
