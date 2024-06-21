@@ -1,6 +1,6 @@
-﻿using BookStore.Server.Repositories.Books;
+﻿using BookStore.Server.Domain.Entities;
+using BookStore.Server.Repositories.Books;
 using BookStoreOnline.Data;
-using BookStoreOnline.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreOnline.Services.Books

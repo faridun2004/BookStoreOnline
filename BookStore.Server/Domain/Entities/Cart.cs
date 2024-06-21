@@ -1,4 +1,4 @@
-﻿namespace BookStore.Server.Models
+﻿namespace BookStore.Server.Domain.Entities
 {
     public class Cart
     {

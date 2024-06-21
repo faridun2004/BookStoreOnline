@@ -1,4 +1,5 @@
-﻿using BookStore.Server.Services;
+﻿using BookStore.Server.Domain.Entities;
+using BookStore.Server.Services;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace BookStore.Server.Models

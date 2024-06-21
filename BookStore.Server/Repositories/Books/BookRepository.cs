@@ -1,5 +1,5 @@
-﻿using BookStoreOnline.Data;
-using BookStoreOnline.Models;
+﻿using BookStore.Server.Domain.Entities;
+using BookStoreOnline.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Server.Repositories.Books

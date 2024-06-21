@@ -1,5 +1,5 @@
-﻿using BookStore.Server.Services.Authors;
-using BookStoreOnline.Models;
+﻿using BookStore.Server.Domain.Entities;
+using BookStore.Server.Services.Authors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Server.Controllers

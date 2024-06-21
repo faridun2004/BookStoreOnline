@@ -1,4 +1,4 @@
-﻿using BookStoreOnline.Models;
+﻿using BookStore.Server.Domain.Entities;
 using BookStoreOnline.Services.Categories;
 using Microsoft.AspNetCore.Mvc;
 

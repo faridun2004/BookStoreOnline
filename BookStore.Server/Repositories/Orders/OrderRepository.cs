@@ -1,5 +1,5 @@
-﻿using BookStore.Server.Models;
-using BookStoreOnline.Data;
+﻿using BookStore.Server.Domain.Entities;
+using BookStore.Server.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Server.Repositories.Orders

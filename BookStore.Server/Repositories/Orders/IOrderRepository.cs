@@ -1,4 +1,4 @@
-﻿using BookStore.Server.Models;
+﻿using BookStore.Server.Domain.Entities;
 
 namespace BookStore.Server.Repositories.Orders
 {

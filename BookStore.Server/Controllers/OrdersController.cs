@@ -1,4 +1,4 @@
-﻿using BookStore.Server.Models;
+﻿using BookStore.Server.Domain.Entities;
 using BookStore.Server.Services.Orders;
 using Microsoft.AspNetCore.Mvc;
 
